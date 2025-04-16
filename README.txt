@@ -1,3 +1,6 @@
+Notes Doc:
+https://docs.google.com/document/d/1svP27vagQOWBsvAiLaffwLFf2Hqp5ySjqtqXHY9mzms/edit?usp=sharing
+
 **Game Concept: Melodic Block**
 
 In *Melodic Block*, players navigate a maze of musical blocks, each representing a different note or sound. The goal is to create harmonic paths by activating blocks in the right order, forming melodies that unlock new areas and progress through the game.
