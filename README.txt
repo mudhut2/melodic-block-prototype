@@ -27,6 +27,17 @@ In *Melodic Pathfinders*, solving puzzles is not just about reaching the goal bu
 
 NOTES:
 
+funcionality ideas:
+
+    moving across blocks to play melody - timing element 
+
+    note pickup permanance - note is no longer on the tile when you pick it up
+
+    moving notes after when replacing note under player
+
+    2 **Grid Manipulation:** Players can move, rotate, or interact with blocks to change their pitch, tone, or position. This influences the puzzle environment, unlocking paths or activating mechanisms.
+
+
 block types:
     abyss1 -> player can hang off ledge over this type of block
 

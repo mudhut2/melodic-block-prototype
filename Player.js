@@ -1,4 +1,3 @@
-let topTexture, bottomTexture; 
 
 class Player {
     constructor(x, y) {
@@ -9,6 +8,7 @@ class Player {
       this.state = 'standing';
       this.smallMoveStep = 80;
       this.bigMoveStep = 120;
+      this.heldNote = null;
     }
 
     canMoveTo(newX, newY, newWidth, newHeight, level) {
@@ -34,10 +34,10 @@ class Player {
       );
     }
     
-      
       update(keys, keyWasPressed, level) {
         console.log('Player:', this.x, this.y, 'State:', this.state);
-    
+        
+
         if (keys['W'] && !keyWasPressed['W']) {
             keyWasPressed['W'] = true;
             let newY, newHeight;
@@ -48,6 +48,7 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'vertical';
+                    //level.triggerAction(this.x, this.y, this); // PICKUP FUNC
                 }
             } else if (this.state === 'vertical') {
                 newY = this.y - this.smallMoveStep;
@@ -56,6 +57,7 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'standing';
+                   // level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'horizontal') {
                 newY = this.y - this.smallMoveStep;
@@ -63,6 +65,7 @@ class Player {
                 if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
                     this.y = newY;
                     this.height = newHeight;
+                    //level.triggerAction(this.x, this.y, this);
                 }
             }
         }
@@ -75,6 +78,7 @@ class Player {
                 if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
                     this.y = newY;
                     this.height = newHeight;
+                    //level.triggerAction(this.x, this.y, this);
                 }
             } else if (this.state === 'vertical') {
                 newY += this.bigMoveStep;
@@ -83,6 +87,7 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'standing';
+                   // level.triggerAction(this.x, this.y, this);
                 }
             } else if (this.state === 'standing') {
                 newY += this.smallMoveStep;
@@ -91,6 +96,7 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'vertical';
+                    //level.triggerAction(this.x, this.y, this);
                 }
             }
         }
@@ -104,11 +110,13 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'standing';
+                    //level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'vertical') {
                 newX -= this.smallMoveStep;
                 if (this.canMoveTo(newX, this.y, this.width, this.height, level)) {
                     this.x = newX;
+                   // level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'standing') {
                 newX -= this.bigMoveStep;
@@ -117,6 +125,7 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'horizontal';
+                   // level.triggerAction(this.x, this.y, this); 
                 }
             }
         }
@@ -130,11 +139,13 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'standing';
+                   // level.triggerAction(this.x, this.y, this);
                 }
             } else if (this.state === 'vertical') {
                 newX += this.smallMoveStep;
                 if (this.canMoveTo(newX, this.y, this.width, this.height, level)) {
                     this.x = newX;
+                  //  level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'standing') {
                 newX += this.smallMoveStep;
@@ -143,21 +154,75 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'horizontal';
+                   // level.triggerAction(this.x, this.y, this);
                 }
             }
         }
+        if ((keys['E'] || keys['e']) && !keyWasPressed['E']) {
+            keyWasPressed['E'] = true;
+            level.pickupNoteButtonPress(this, noteSounds);    
+        }        
     }
-    
-  
-    show() {
-      fill(0, 0, 255); // Blue for the main body of the player
-      rect(this.x, this.y, this.width, this.height);
-      
-      // Draw the top texture
-      //image(topTexture, this.x, this.y - 20, this.width, 20);  // Adjust position and size as needed
 
-      // Draw the bottom texture
-     // image(bottomTexture, this.x, this.y + this.height, this.width, 20);  // Adjust position and size as needed
-    }
-  }
+    tryAction(level) {
+        let actionX = this.x;
+        let actionY = this.y;
+    
+        if (this.state === 'standing') {
+            // Trigger from center bottom
+            actionX += this.width / 2;
+            actionY += this.height / 2;
+        } else if (this.state === 'horizontal') {
+            // Trigger from the edge that's furthest to the right
+            actionX += this.width - this.smallMoveStep / 2;
+            actionY += this.height / 2;
+        } else if (this.state === 'vertical') {
+            // Trigger from the bottom tile
+            actionX += this.width / 2;
+            actionY += this.height - this.smallMoveStep / 2;
+        }
+    
+        //level.triggerAction(actionX, actionY, this);
+    }       
+
+      pickupNote(tileIndex, level) {
+        this.heldNote = tileIndex;
+        console.log(`Picked up note: ${level.tileType[tileIndex].name}`);
+      }
+      
+      dropNote(level) {
+        if (this.heldNote !== null) {
+          console.log(`Dropped note ${level.tileType[this.heldNote].name} at gate/finish`);
+          this.heldNote = null;
+        }
+      }
+      
+    show() {
+        // Draw the main body of the player (block)
+        fill(0, 0, 250);  // Blue as the block's color (for fallback)
+        rect(this.x, this.y, this.width, this.height);
+
+        // Front texture
+        if (playerTex) {
+          image(playerTex, this.x, this.y, this.width, this.height);  // Adjust position and size as needed
+        }
+        // 3D frame using lines (edges)
+        stroke(0);  
+        strokeWeight(3);  
+        line(this.x, this.y, this.x + this.width, this.y);  // Top edge
+        line(this.x, this.y, this.x, this.y + this.height);  // Left edge
+        line(this.x + this.width, this.y, this.x + this.width, this.y + this.height);  // Right edge
+        line(this.x, this.y + this.height, this.x + this.width, this.y + this.height);  // Bottom edge
+        let depthOffset = 20;  
+        // Draw the 3D edges
+        line(this.x + depthOffset, this.y + depthOffset, this.x + this.width + depthOffset, this.y + depthOffset);  // Top back edge
+        line(this.x + depthOffset, this.y + depthOffset, this.x + depthOffset, this.y + this.height + depthOffset);  // Left back edge
+        line(this.x + this.width + depthOffset, this.y + depthOffset, this.x + this.width + depthOffset, this.y + this.height + depthOffset);  // Right back edge
+        line(this.x + depthOffset, this.y + this.height + depthOffset, this.x + this.width + depthOffset, this.y + this.height + depthOffset);  // Bottom back edge
+        line(this.x, this.y, this.x + depthOffset, this.y + depthOffset);  // Front-left to back-left
+        line(this.x + this.width, this.y, this.x + this.width + depthOffset, this.y + depthOffset);  // Front-right to back-right
+        line(this.x, this.y + this.height, this.x + depthOffset, this.y + this.height + depthOffset);  // Front-bottom to back-bottom
+        line(this.x + this.width, this.y + this.height, this.x + this.width + depthOffset, this.y + this.height + depthOffset);  // Front-bottom-right to back-bottom-right
+    }    
+}
   
