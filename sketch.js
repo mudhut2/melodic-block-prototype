@@ -24,8 +24,9 @@ let noteTextures = {};
 let noteSounds = [];
 
 let keys = {};
+
 let keyWasPressed = {
-  'W': false, 'S': false, 'A': false, 'D': false
+  'W': false, 'S': false, 'A': false, 'D': false, '': false
 }; // Initialize all keys to false
 
 function preload() {
@@ -36,6 +37,7 @@ function preload() {
   gate1Tex = loadImage('textures/abyss1.png');
   finishTile1 = loadImage('textures/pillar.png');
   startTile1 = loadImage('textures/filmTex2.jpg');
+  tileTex2 = loadImage('textures/sq-mosaic.jpg');
 
   // Load note textures
   cTileTex = loadImage('textures/c-tile.jpg');
@@ -47,13 +49,13 @@ function preload() {
   bTileTex = loadImage('textures/b-tile.jpg');
 
   // Load sounds for notes
-  noteSounds["c-tile"] = loadSound('sounds/c-dark-piano.mp3');
-  noteSounds["d-tile"] = loadSound('sounds/d-dark-piano.mp3');
-  noteSounds["e-tile"] = loadSound('sounds/e-dark-piano.mp3');
-  noteSounds["f-tile"] = loadSound('sounds/f-dark-piano.mp3');
-  noteSounds["g-tile"] = loadSound('sounds/g-dark-piano.mp3');
-  noteSounds["a-tile"] = loadSound('sounds/a-dark-piano.mp3');
-  noteSounds["b-tile"] = loadSound('sounds/b-dark-piano.mp3');
+  noteSounds["c-tile"] = loadSound('sounds/c-marimba.wav');
+  noteSounds["d-tile"] = loadSound('sounds/d-marimba.wav');
+  noteSounds["e-tile"] = loadSound('sounds/e-marimba.wav');
+  noteSounds["f-tile"] = loadSound('sounds/f-marimba.wav');
+  noteSounds["g-tile"] = loadSound('sounds/g-marimba.wav');
+  noteSounds["a-tile"] = loadSound('sounds/a-marimba.wav');
+  noteSounds["b-tile"] = loadSound('sounds/b-marimba.wav');
 }
 
 function setup() {
@@ -65,23 +67,15 @@ function setup() {
 function draw() {
   background(30);
   level.draw();
+  
   player.update(keys, keyWasPressed, level);
 
-  if (player.heldNote) {
-    fill(255);  // Set the color to white for text
-    textAlign(CENTER, BOTTOM);
-    textSize(24);
-    text(`🎵 Holding: ${player.heldNote}`, width / 2, 640);  // Display the note name
-} else {
-    fill(255);
-    textAlign(CENTER, BOTTOM);
-    textSize(24);
-    text(`🎵 Holding: None`, width / 2, 640);
-}
+  level.drawHeldNotes(player); 
   player.show();
 }
 
 function keyPressed() {
+  userStartAudio();
   keys[key.toUpperCase()] = true;
 }
 

@@ -15,27 +15,29 @@ class Level {
         9: { name: 'b-tile' , solid: false, texture: bTileTex, action: null },
         10: { name: 'gate1', solid: true, texture: gate1Tex, action: null },
         11: { name: 'finish-tile1', solid: false, texture: finishTile1, action: null},
-        12: { name: 'startTile', solid: false, texture: startTile1, action: null } //   <--ADD ACTION ... replay melody/chord/ key for level when player is on this tile 
+        12: { name: 'startTile', solid: false, texture: startTile1, action: null }, //   <--ADD ACTION ... replay melody/chord/ key for level when player is on this tile
+        13: { name: 'floor2', solid: false, texture: tileTex2, action: null }, // make starttile dynamically change while level is being compleded to unlcok the full melody then when it is finally unlcoked it play the final melody to finish that level
+        14: { name:'tileTex2', solid: false, texture: tileTex2, action: null }
       };
       this.layout = [
-        [3, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
-        [0, 0, 2, 2, 9, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0],
-        [0, 0, 2, 2, 6, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 2, 2, 4, 0, 0, 0, 0, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [3, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 13, 13, 4, 13],
+        [0, 0, 2, 2, 13, 13, 13, 13, 13, 10, 13, 0, 0, 0, 0, 2, 13, 13, 13, 13],
+        [0, 0, 2, 2, 13, 13, 13, 13, 13, 10, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 2, 2, 13, 13, 13, 13, 13, 10, 13, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 2, 2, 2, 2, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 4, 0, 0, 0, 2, 2, 0, 0, 0],
         [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 2, 0, 0, 0, 3, 12, 12, 0, 0, 0, 2, 2, 0, 0, 0],
-        [9, 0, 0, 0, 0, 2, 2, 2, 2, 2, 12, 12, 0, 0, 0, 2, 2, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 2, 0, 0, 0],
-        [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2, 0, 0, 0, 0],
-        [2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 11, 11],
-        [2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0,11 , 11]
+        [0, 0, 0, 0, 0, 2, 0, 0, 0, 6, 12, 12, 13, 13, 0, 2, 2, 0, 0, 0],
+        [9, 0, 0, 0, 0, 2, 2, 2, 2, 2, 12, 12, 13, 13, 0, 2, 2, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 13, 13, 0, 2, 2, 0, 0, 0],
+        [2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 13, 13, 0, 2, 0, 0, 0, 0],
+        [2, 2, 2, 2, 2, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 10, 0, 0, 11, 11],
+        [2, 2, 2, 2, 2, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 10, 0, 0,11 , 11]
       ];      
     }
-  
+
     draw() {
         for (let row = 0; row < this.layout.length; row++) {
           for (let col = 0; col < this.layout[row].length; col++) {
@@ -52,7 +54,7 @@ class Level {
           }
         }
       }
-      pickupNoteButtonPress(player, noteSounds) {
+      pickupNoteButtonPress(player, noteSounds, slotIndex) {
         const left = player.x;
         const top = player.y;
         const right = player.x + player.width;
@@ -62,49 +64,51 @@ class Level {
         const endX = Math.floor((right - 1) / this.tileSize);
         const endY = Math.floor((bottom - 1) / this.tileSize);
         const notesUnderPlayer = [];
+    
         for (let tileX = startX; tileX <= endX; tileX++) {
             for (let tileY = startY; tileY <= endY; tileY++) {
-                if (tileY < 0 || tileY >= this.layout.length || tileX < 0 || tileX >= this.layout[0].length) {
-                    console.log(`Skipping out-of-bounds tile at (${tileX}, ${tileY})`);
-                    continue;
-                }
+                if (
+                    tileY < 0 || tileY >= this.layout.length ||
+                    tileX < 0 || tileX >= this.layout[0].length
+                ) continue;
+    
                 const tileIndex = this.layout[tileY][tileX];
-                const tile = this.tileType[tileIndex];
-    
-                console.log(`Checking tile at (${tileX}, ${tileY}) with index ${tileIndex} and type`, tile);
-    
                 const pickupableIndices = [3, 4, 5, 6, 7, 8, 9];
+    
                 if (pickupableIndices.includes(tileIndex)) {
-                    const noteName = tile.name;
-                    console.log(`Found pickupable note: ${noteName} at (${tileX}, ${tileY})`);
+                    const noteName = this.tileType[tileIndex].name;
                     notesUnderPlayer.push({ tileX, tileY, noteName });
                 }
             }
         }
+    
         if (notesUnderPlayer.length > 0) {
-            console.log(`Notes under player:`, notesUnderPlayer.map(n => n.noteName));
+            const note = notesUnderPlayer[0]; // First note under player
+            const oldNote = player.heldNotes[slotIndex];
     
-            if (player.heldNote) {
-                console.log(`Player is currently holding note: ${player.heldNote}. Dropping it.`);
-                this.dropHeldNote(player);
+            if (oldNote && oldNote !== note.noteName) {
+                console.log(`Dropped note '${oldNote}' from slot ${slotIndex}`);
             }
-            const noteToPickUp = notesUnderPlayer[0];
-            player.heldNote = noteToPickUp.noteName;
-            console.log(`Picking up note: ${noteToPickUp.noteName} at (${noteToPickUp.tileX}, ${noteToPickUp.tileY})`);
     
-            //this.layout[noteToPickUp.tileY][noteToPickUp.tileX] = 1; // Replace with floor
-            player.notesPickedUp = notesUnderPlayer.map(note => note.noteName);
-            console.log(`Stored picked up notes:`, player.notesPickedUp);
+            player.heldNotes[slotIndex] = note.noteName;
+            console.log(`Picked up note '${note.noteName}' into slot ${slotIndex}`);
     
-            // 🔊 Play the sound of the note
-            if (noteSounds[player.heldNote]) {
-                noteSounds[player.heldNote].play();
+            if (noteSounds[note.noteName]) {
+                noteSounds[note.noteName].play(); // Play only the new note
             } else {
-                console.warn(`No sound found for note: ${player.heldNote}`);
+                console.warn(`No sound found for note: ${note.noteName}`);
             }
         } else {
-            console.log(`No notes under player to pick up.`);
+            // No note under player, just play the held note
+            const heldNote = player.heldNotes[slotIndex];
+            if (heldNote && noteSounds[heldNote]) {
+                noteSounds[heldNote].play();
+                console.log(`Played held note '${heldNote}' from slot ${slotIndex}`);
+            } else {
+                console.log(`No note held in slot ${slotIndex} to play.`);
+            }
         }
+        console.log(`Player is now holding:`, player.heldNotes);
     }
     
     dropHeldNote(player) {
@@ -124,69 +128,20 @@ class Level {
   
       player.heldNote = null;
       player.lastPickupTile = null;
-  }
+    }
   
-    
-   /*pickupNoteButtonPress(player) { // can make into class later for more functionality/mechanics??
-        const left = player.x;
-        const top = player.y;
-        const right = player.x + player.width;
-        const bottom = player.y + player.height;
-    
-        // Get the starting and ending tile coordinates for the player's bounding box
-        const startX = Math.floor(left / this.tileSize);
-        const startY = Math.floor(top / this.tileSize);
-        const endX = Math.floor((right - 1) / this.tileSize);  // Ensure we round down at the right edge
-        const endY = Math.floor((bottom - 1) / this.tileSize);  // Ensure we round down at the bottom edge
-    
-        // Loop through all the tiles the player's bounding box covers
-        for (let tileX = startX; tileX <= endX; tileX++) {
-            for (let tileY = startY; tileY <= endY; tileY++) {
-                
-                // Ensure the tile coordinates are within bounds
-                if (tileY < 0 || tileY >= this.layout.length || tileX < 0 || tileX >= this.layout[0].length) {
-                    continue; // Skip out-of-bounds tiles
-                }
-    
-                const tileIndex = this.layout[tileY][tileX];
-                const tile = this.tileType[tileIndex];
-    
-                // Debug log to check tile properties and the area being covered
-                console.log(`Checking tile at (${tileX}, ${tileY}):`, tile);
-    
-                // Check if this tile is in the pickupable range
-                const pickupableIndices = [3, 4, 5, 6, 7, 8, 9];
-                if (pickupableIndices.includes(tileIndex) ) {
-                    const noteName = tile.name;
-                    if (player.heldNote) {
-                      console.log(`Dropping held note: ${player.heldNote}`);
-                      this.notes[player.heldNote] = false; // Mark the previous note as unheld
-                      // You could also add code to return the previously held note to the grid if necessary
-                  }
-                    console.log(`Picked up note: ${noteName}`);
-                    this.notes[noteName] = true;
-                    player.heldNote = noteName;
-                    //this.layout[tileY][tileX] = 1; // Replace with tile index for 'floor'
-                    return; 
-                }
-            }
-        } 
-        // If no note was picked up
-        if (!player.heldNote) {
-            console.log('No note under the player to pick up.');
+    dropAllNotes(player, noteSounds) {
+      for (const noteName of player.heldNotes) {
+        if (noteSounds[noteName]) {
+          noteSounds[noteName].play();
         } else {
-            console.log(`You're already holding the note: ${player.heldNote}`);
+          console.warn(`No sound found for note: ${noteName}`);
         }
-    }
-     
- */
-      
-    // Special action for test blocks
-    triggerSpecialAction(x, y) {
-      console.log(`Special action triggered at ${x}, ${y}`);
-      // You can add more advanced actions for special blocks, such as playing a specific sound
-      // Example: playSpecialSound(x, y);
-    }
+      }
+    
+      player.heldNotes = [];
+      console.log("Dropped all held notes.");
+    }    
 
     isTileSolid(x, y) {
       const tileX = Math.floor(x / this.tileSize);
@@ -220,5 +175,27 @@ class Level {
       return pickupableIndices.includes(tileIndex);
     }  
 
+    drawHeldNotes(player) {
+      const baseY = height - 45;  // position near bottom of canvas
+      const boxSize = 40;
+    
+      for (let i = 0; i < player.heldNotes.length; i++) {
+        const noteName = player.heldNotes[i];
+        const x = 420 + i * (boxSize + 10);  // space out the boxes
+    
+        // Draw box
+        fill(255);
+        stroke(0);
+        rect(x, baseY, boxSize, boxSize);
+    
+        // Show note name
+        fill(0);
+        textAlign(CENTER, CENTER);
+        textSize(20);
+        if (noteName) {
+          text(noteName[0].toUpperCase(), x + boxSize / 2, baseY + boxSize / 2);
+        }
+      }
+    }
   }
   

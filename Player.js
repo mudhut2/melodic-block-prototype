@@ -8,7 +8,8 @@ class Player {
       this.state = 'standing';
       this.smallMoveStep = 80;
       this.bigMoveStep = 120;
-      this.heldNote = null;
+      this.heldNotes = [];
+      this.maxNotes = 4;
     }
 
     canMoveTo(newX, newY, newWidth, newHeight, level) {
@@ -34,10 +35,9 @@ class Player {
       );
     }
     
-      update(keys, keyWasPressed, level) {
+    update(keys, keyWasPressed, level) {
         console.log('Player:', this.x, this.y, 'State:', this.state);
         
-
         if (keys['W'] && !keyWasPressed['W']) {
             keyWasPressed['W'] = true;
             let newY, newHeight;
@@ -48,7 +48,6 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'vertical';
-                    //level.triggerAction(this.x, this.y, this); // PICKUP FUNC
                 }
             } else if (this.state === 'vertical') {
                 newY = this.y - this.smallMoveStep;
@@ -57,7 +56,6 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'standing';
-                   // level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'horizontal') {
                 newY = this.y - this.smallMoveStep;
@@ -65,30 +63,27 @@ class Player {
                 if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
                     this.y = newY;
                     this.height = newHeight;
-                    //level.triggerAction(this.x, this.y, this);
                 }
             }
-        }
-        else if (keys['S'] && !keyWasPressed['S']) {
-            keyWasPressed['S'] = true;
-            let newY = this.y, newHeight = this.height;
-            if (this.state === 'horizontal') {
-                newY += this.smallMoveStep;
-                newHeight = this.smallMoveStep;
-                if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
-                    this.y = newY;
-                    this.height = newHeight;
-                    //level.triggerAction(this.x, this.y, this);
-                }
-            } else if (this.state === 'vertical') {
-                newY += this.bigMoveStep;
-                newHeight = this.smallMoveStep;
-                if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
-                    this.y = newY;
-                    this.height = newHeight;
-                    this.state = 'standing';
-                   // level.triggerAction(this.x, this.y, this);
-                }
+    }
+    else if (keys['S'] && !keyWasPressed['S']) {
+        keyWasPressed['S'] = true;
+        let newY = this.y, newHeight = this.height;
+        if (this.state === 'horizontal') {
+            newY += this.smallMoveStep;
+            newHeight = this.smallMoveStep;
+            if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
+                this.y = newY;
+                this.height = newHeight;
+            }
+        } else if (this.state === 'vertical') {
+            newY += this.bigMoveStep;
+            newHeight = this.smallMoveStep;
+            if (this.canMoveTo(this.x, newY, this.width, newHeight, level)) {
+                this.y = newY;
+                this.height = newHeight;
+                this.state = 'standing';
+            }
             } else if (this.state === 'standing') {
                 newY += this.smallMoveStep;
                 newHeight = this.bigMoveStep;
@@ -96,36 +91,32 @@ class Player {
                     this.y = newY;
                     this.height = newHeight;
                     this.state = 'vertical';
-                    //level.triggerAction(this.x, this.y, this);
                 }
             }
         }
-        else if (keys['A'] && !keyWasPressed['A']) {
-            keyWasPressed['A'] = true;
-            let newX = this.x, newWidth = this.width;
-            if (this.state === 'horizontal') {
-                newX -= this.smallMoveStep;
-                newWidth = this.smallMoveStep;
-                if (this.canMoveTo(newX, this.y, newWidth, this.height, level)) {
-                    this.x = newX;
-                    this.width = newWidth;
-                    this.state = 'standing';
-                    //level.triggerAction(this.x, this.y, this); 
-                }
-            } else if (this.state === 'vertical') {
-                newX -= this.smallMoveStep;
-                if (this.canMoveTo(newX, this.y, this.width, this.height, level)) {
-                    this.x = newX;
-                   // level.triggerAction(this.x, this.y, this); 
-                }
-            } else if (this.state === 'standing') {
+    else if (keys['A'] && !keyWasPressed['A']) {
+        keyWasPressed['A'] = true;
+        let newX = this.x, newWidth = this.width;
+        if (this.state === 'horizontal') {
+            newX -= this.smallMoveStep;
+            newWidth = this.smallMoveStep;
+            if (this.canMoveTo(newX, this.y, newWidth, this.height, level)) {
+                this.x = newX;
+                this.width = newWidth;
+                this.state = 'standing';
+            }
+        } else if (this.state === 'vertical') {
+            newX -= this.smallMoveStep;
+            if (this.canMoveTo(newX, this.y, this.width, this.height, level)) {
+                   this.x = newX;
+            }
+        } else if (this.state === 'standing') {
                 newX -= this.bigMoveStep;
                 newWidth = this.bigMoveStep;
                 if (this.canMoveTo(newX, this.y, newWidth, this.height, level)) {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'horizontal';
-                   // level.triggerAction(this.x, this.y, this); 
                 }
             }
         }
@@ -139,13 +130,11 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'standing';
-                   // level.triggerAction(this.x, this.y, this);
                 }
             } else if (this.state === 'vertical') {
                 newX += this.smallMoveStep;
                 if (this.canMoveTo(newX, this.y, this.width, this.height, level)) {
                     this.x = newX;
-                  //  level.triggerAction(this.x, this.y, this); 
                 }
             } else if (this.state === 'standing') {
                 newX += this.smallMoveStep;
@@ -154,14 +143,19 @@ class Player {
                     this.x = newX;
                     this.width = newWidth;
                     this.state = 'horizontal';
-                   // level.triggerAction(this.x, this.y, this);
                 }
             }
         }
-        if ((keys['E'] || keys['e']) && !keyWasPressed['E']) {
-            keyWasPressed['E'] = true;
-            level.pickupNoteButtonPress(this, noteSounds);    
-        }        
+        if ((keys['J'] || keys['j']) && !keyWasPressed['J']) {
+            keyWasPressed['J'] = true;
+        
+            const heldNote = this.heldNotes[0];
+    
+            // If the player is over a note to pick up, replace the held note with it
+            level.pickupNoteButtonPress(this, noteSounds, 0);
+        } else if (!(keys['J'] || keys['j'])) {
+            keyWasPressed['J'] = false;
+        }
     }
 
     tryAction(level) {
@@ -181,8 +175,6 @@ class Player {
             actionX += this.width / 2;
             actionY += this.height - this.smallMoveStep / 2;
         }
-    
-        //level.triggerAction(actionX, actionY, this);
     }       
 
       pickupNote(tileIndex, level) {
