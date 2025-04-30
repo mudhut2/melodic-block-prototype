@@ -38,8 +38,9 @@ funcionality ideas:
 
     moving notes after when replacing note under player
 
-    2 **Grid Manipulation:** Players can move, rotate, or interact with blocks to change their pitch, tone, or position. This influences the puzzle environment, unlocking paths or activating mechanisms.
+    Players can move, rotate, or interact with blocks to change their pitch, tone, or position. This influences the puzzle environment, unlocking paths or activating mechanisms.
 
+    starts with single melody, unmovable tiles, then sticky tiles that are not dropped, then moveable tiles can be introduced that replace the tile being picked up
 
 block types:
    abyss1 -> player can hang off ledge over this type of block

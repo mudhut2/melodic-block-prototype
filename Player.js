@@ -1,16 +1,16 @@
-
+// add vibration to player when note plays
 class Player {
     constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.width = 80;
-      this.height = 80;
-      this.state = 'standing';
-      this.smallMoveStep = 80;
-      this.bigMoveStep = 120;
-      this.heldNotes = [];
-      this.maxNotes = 4;
-    }
+        this.x = x;
+        this.y = y;
+        this.width = 80;
+        this.height = 80;
+        this.state = 'standing';
+        this.smallMoveStep = 80;
+        this.bigMoveStep = 120;
+        this.heldNotes = []; 
+        this.maxNotes = 1;
+      }
 
     canMoveTo(newX, newY, newWidth, newHeight, level) {
       // Check corners
@@ -66,6 +66,7 @@ class Player {
                 }
             }
     }
+    
     else if (keys['S'] && !keyWasPressed['S']) {
         keyWasPressed['S'] = true;
         let newY = this.y, newHeight = this.height;
@@ -94,6 +95,7 @@ class Player {
                 }
             }
         }
+
     else if (keys['A'] && !keyWasPressed['A']) {
         keyWasPressed['A'] = true;
         let newX = this.x, newWidth = this.width;
@@ -152,43 +154,46 @@ class Player {
             const heldNote = this.heldNotes[0];
     
             // If the player is over a note to pick up, replace the held note with it
-            level.pickupNoteButtonPress(this, noteSounds, 0);
+            level.playNoteButtonPress(player, noteSounds, 0);
+
         } else if (!(keys['J'] || keys['j'])) {
             keyWasPressed['J'] = false;
         }
-    }
 
-    tryAction(level) {
-        let actionX = this.x;
-        let actionY = this.y;
-    
-        if (this.state === 'standing') {
-            // Trigger from center bottom
-            actionX += this.width / 2;
-            actionY += this.height / 2;
-        } else if (this.state === 'horizontal') {
-            // Trigger from the edge that's furthest to the right
-            actionX += this.width - this.smallMoveStep / 2;
-            actionY += this.height / 2;
-        } else if (this.state === 'vertical') {
-            // Trigger from the bottom tile
-            actionX += this.width / 2;
-            actionY += this.height - this.smallMoveStep / 2;
+        if ((keys[' '] || keys['SPACE']) && !keyWasPressed[' ']) {
+            keyWasPressed[' '] = true;
+        
+            const heldNote = this.heldNotes[0];
+        
+            // If the player is over a note to pick up, replace the held note with it
+            level.storeNoteButtonPress(player, 0);
+        } else if (!(keys[' '] || keys['SPACE'])) {
+            keyWasPressed[' '] = false;
         }
-    }       
+    }
 
       pickupNote(tileIndex, level) {
         this.heldNote = tileIndex;
         console.log(`Picked up note: ${level.tileType[tileIndex].name}`);
       }
       
-      dropNote(level) {
+      dropNote(level) { // swaps dropped not into picked up notes place
         if (this.heldNote !== null) {
-          console.log(`Dropped note ${level.tileType[this.heldNote].name} at gate/finish`);
-          this.heldNote = null;
+            const tileX = Math.floor((this.x + this.width / 2) / level.tileSize);
+            const tileY = Math.floor((this.y + this.height / 2) / level.tileSize);
+            const currentTile = level.getTile(tileX, tileY);
+            if (currentTile !== null) {
+                // Swap the held note with the tile
+                const temp = level.tiles[tileY][tileX];
+                level.tiles[tileY][tileX] = this.heldNote;
+                this.heldNote = temp;
+                console.log(`Swapped tile at (${tileX}, ${tileY}) with held note`);
+            } else {
+                console.log("No tile to swap with");
+            }
         }
-      }
-      
+    }
+    
     show() {
         // Draw the main body of the player (block)
         fill(0, 0, 250);  // Blue as the block's color (for fallback)
