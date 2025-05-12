@@ -42,9 +42,14 @@ funcionality ideas:
 
     starts with single melody, unmovable tiles, then sticky tiles that are not dropped, then moveable tiles can be introduced that replace the tile being picked up
 
+    looping mechanic, player plays melody then can push L to loop it
 block types:
    abyss1 -> player can hang off ledge over this type of block
 
    wall1(squidwall) -> normal wall, cannot hang over edge
 
    note block -> when the PLAY key is pressed the note under the players block is playeed along with the note attached to player, if any.
+
+
+Level x: 
+    first melody for key / checkpoint: A, A, F, D, F

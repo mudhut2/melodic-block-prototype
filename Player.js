@@ -122,6 +122,7 @@ class Player {
                 }
             }
         }
+
         else if (keys['D'] && !keyWasPressed['D']) {
             keyWasPressed['D'] = true;
             let newX = this.x, newWidth = this.width;
@@ -148,17 +149,6 @@ class Player {
                 }
             }
         }
-        if ((keys['J'] || keys['j']) && !keyWasPressed['J']) {
-            keyWasPressed['J'] = true;
-        
-            const heldNote = this.heldNotes[0];
-    
-            // If the player is over a note to pick up, replace the held note with it
-            level.playNoteButtonPress(player, noteSounds, 0);
-
-        } else if (!(keys['J'] || keys['j'])) {
-            keyWasPressed['J'] = false;
-        }
 
         if ((keys[' '] || keys['SPACE']) && !keyWasPressed[' ']) {
             keyWasPressed[' '] = true;
@@ -166,9 +156,20 @@ class Player {
             const heldNote = this.heldNotes[0];
         
             // If the player is over a note to pick up, replace the held note with it
-            level.storeNoteButtonPress(player, 0);
+            level.playNoteButtonPress(player, noteSounds, 0);
         } else if (!(keys[' '] || keys['SPACE'])) {
             keyWasPressed[' '] = false;
+        }
+
+        if ((keys['E'] || keys['e']) && !keyWasPressed['E']) {
+            keyWasPressed['E'] = true;
+        
+            const heldNote = this.heldNotes[0];
+        
+            // If the player is over a note to pick up, replace the held note with it
+            level.storeNoteButtonPress(player, 0);
+        } else if (!(keys['E'] || keys['e'])) {
+            keyWasPressed['E'] = false;
         }
     }
 

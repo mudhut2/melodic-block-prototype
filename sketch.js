@@ -108,8 +108,8 @@ function draw() {
   
   player.update(keys, keyWasPressed, level);
 
-  level.drawHeldNotes(player); 
-  level.drawHeldNotes(player, inventoryTex);
+  //level.drawHeldNotes(player); 
+  level.drawHeldNotes(player, inventoryTex, playerTex);
 
   player.show();
 }

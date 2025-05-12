@@ -16,7 +16,7 @@ class Level {
         9:  { name: 'b-tile',       solid: false, texture: bTileTex,      action: null, sticky: true },
         10: { name: 'gate1',        solid: true,  texture: gateTex1,      action: null, sticky: false },
         11: { name: 'finish-tile1', solid: false, texture: finishTile1,   action: null, sticky: false },
-        12: { name: 'startTile',    solid: false, texture: startTile1,    action: null, sticky: false },
+        12: { name: 'startTile',    solid: false, texture: startTile1,    action: this.playLevelMelody, sticky: false },
         13: { name: 'floorTex2',    solid: false, texture: floorTex2,     action: null, sticky: true },
         14: { name: 'keyTex1',      solid: false, texture: keyTex1,        action: null, sticky: true }
       };
@@ -56,8 +56,14 @@ class Level {
         [0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       ]; */
-    }
+      // Melody checking maps
+      this.correctMelody = ["d-tile", "d-tile"]; // Customize for puzzle
+      this.playedMelody = [];
+      this.maxMelodyLength = 2;
+      this.gateOpen = false;
 
+    }
+    
     draw() {
         for (let row = 0; row < this.layout.length; row++) {
           for (let col = 0; col < this.layout[row].length; col++) {
@@ -75,14 +81,15 @@ class Level {
         }
       }
       
-      playNoteButtonPress(player, noteSounds, slotIndex) {              // J key
+      playNoteButtonPress(player, noteSounds, slotIndex) {
         const notesUnderPlayer = this.getNotesUnderPlayer(player);
-        
+    
         if (notesUnderPlayer.length > 0) {
-            const note = notesUnderPlayer[0]; // play what's under you
+            const note = notesUnderPlayer[0];
             if (noteSounds[note.noteName]) {
                 noteSounds[note.noteName].play();
                 console.log(`Played tile note '${note.noteName}'`);
+                this.onNotePlayed(note.noteName);  // Notify level about the played note
             } else {
                 console.warn(`No sound for tile note: ${note.noteName}`);
             }
@@ -91,13 +98,14 @@ class Level {
             if (heldNote && noteSounds[heldNote]) {
                 noteSounds[heldNote].play();
                 console.log(`Played held note '${heldNote}' from slot ${slotIndex}`);
+                this.onNotePlayed(heldNote);  // Notify level about the played note
             } else {
                 console.log(`No note to play in slot ${slotIndex}`);
             }
         }
     }
-
-    storeNoteButtonPress(player, slotIndex) { // SPACE
+    
+    storeNoteButtonPress(player, slotIndex) { 
       const notesUnderPlayer = this.getNotesUnderPlayer(player);
   
       if (notesUnderPlayer.length > 0) {
@@ -204,7 +212,7 @@ class Level {
       return pickupableIndices.includes(tileIndex);
     }  
 
-    drawHeldNotes(player, inventoryTex) { // make fingerTex hover over note that can be pushed, push when sound?? 
+    drawHeldNotes(player, inventoryTex, playerTex) { // make fingerTex hover over note that can be pushed, push when sound??
       const baseY = height - 76;  
       const boxSize = 50;
       const spacing = 15;
@@ -219,7 +227,7 @@ class Level {
         imageMode(CORNER);
         image(inventoryTex, noteUnderPlayerX - spacing/2, baseY - spacing/2, inventoryWidth + spacing, inventoryHeight + spacing);
       }
-
+    
       // === DRAW FIRST NOTE (under player) ===
       const notesUnderPlayer = this.getNotesUnderPlayer(player);
     
@@ -257,7 +265,7 @@ class Level {
     
           // ✅ Apply tint if standing on another note
           if (notesUnderPlayer.length > 0) {
-            tint(80, 80, 180, 150); // gray and transparent
+            tint(80,100, 180, 150); // gray and transparent
           } else {
             noTint();
           }
@@ -270,13 +278,76 @@ class Level {
           } else {
             fill(0);
           }
-    
           textAlign(CENTER, CENTER);
           textSize(20);
           text(noteName[0].toUpperCase(), x + boxSize / 2, baseY + boxSize / 2);
         }
       }
+      // === DRAW FINGER OVER NOTE UNDER PLAYER ===
+      if (notesUnderPlayer.length > 0 && playerTex) {
+        const fingerX = noteUnderPlayerX + boxSize / 4;
+        const fingerY = baseY - (boxSize - 130) / 1.5;
+
+        imageMode(CENTER);
+        image(playerTex, fingerX, fingerY, boxSize * 0.8, boxSize * 0.8);
+        imageMode(CORNER);
+      }     
+      // === DRAW FINGER OVER HELD NOTE IF NOT ON A NOTE BLOCK ===
+      if (notesUnderPlayer.length === 0 && player.heldNotes.length > 0 && playerTex) {
+        const fingerX = heldNoteX + boxSize / 4;
+        const fingerY = baseY - (boxSize - 130) / 1.5;
+
+        imageMode(CENTER);
+        image(playerTex, fingerX, fingerY, boxSize * 0.8, boxSize * 0.8);
+        imageMode(CORNER);
+      }
+            // === LABELS UNDER BOXES ===
+            fill(200);
+            noStroke();
+            textSize(14);
+            textAlign(CENTER, TOP);
+            text("Over", noteUnderPlayerX + boxSize / 2, baseY + boxSize + 8);
+            text("Held", heldNoteX + boxSize / 2, baseY + boxSize + 8);      
     }
-    
-  }
+
+    onNotePlayed(noteName) {
+      // Immediately reset if the melody length exceeds the max allowed
+      if (this.playedMelody.length >= this.maxMelodyLength) {
+          this.clearMelody(); // Reset the melody if it's too long
+      }
+      
+      // Add the new note
+      this.playedMelody.push(noteName);
+      
+      console.log(`Player's played melody: ${this.playedMelody.join(', ')}`);
+  
+      // Check if the melody matches the correct one
+      this.checkMelody(this.playedMelody);
+    }
+  
+    checkMelody(melody) {
+        
+        // Check if the melody matches the correct one
+        if (melody.length === this.correctMelody.length && melody.every((note, index) => note === this.correctMelody[index])) {
+            console.log("Correct melody played!");
+            this.openGate();  // Open the gate if the melody is correct
+        }
+    }
+  
+    clearMelody() {
+        this.playedMelody = [];  // Clear the played melody
+        console.log("Failed attempt, too many notes played. Try again.");
+    }
+
+    // Example method to open the gate
+    openGate() {
+        console.log("Gate opened!");
+        // Implement your gate opening logic here
+        // You might want to trigger an animation, disable the gate, etc.
+    }
+
+
+}
+  
+
   
